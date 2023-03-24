@@ -8,6 +8,7 @@ fi
 
 logfile="$1"
 
-echo "Count   URL             Status" > output.txt
-awk '$9 == 404 {print $7 "       " $9}' "$logfile" | sort | uniq -c | awk '{ printf "%-7s%-16s%s\n", $1, $2, $3 }' | column -t >> output.txt
+echo "Count   Status   URL" > output.txt
+awk '$9 == 404 {print $7, $9}' "$logfile" | sort | uniq -c | awk '{ printf "%-7s%-9s%s\n", $1, $3, $2 }' | awk 'BEGIN {print "# 404 errors in access.log\n# Columns: Count, Status Code, URL\n#---------------------------------------------------"} {print}' >> output.txt
 echo "Total: $(awk '$9 == 404 {print $7}' "$logfile" | wc -l)" >> output.txt
+
